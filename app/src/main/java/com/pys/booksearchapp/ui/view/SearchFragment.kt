@@ -57,6 +57,8 @@ class SearchFragment : Fragment() {
         var startTime = System.currentTimeMillis()
         var endTime : Long
 
+        binding.etSearch.text = Editable.Factory.getInstance().newEditable(bookSearchViewModel.query)
+
         // 텍스트가 입력되면 값을 viewModel에 전달(사람 입력시간을 고려하여 delay를 줌)
         binding.etSearch.addTextChangedListener { text : Editable? ->
             endTime = System.currentTimeMillis()
@@ -65,6 +67,7 @@ class SearchFragment : Fragment() {
                     val query = it.toString().trim()
                     if(query.isNotEmpty()) {
                         bookSearchViewModel.searchBooks(query)
+                        bookSearchViewModel.query = query
                     }
                 }
             }
