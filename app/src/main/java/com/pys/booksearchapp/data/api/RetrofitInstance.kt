@@ -8,16 +8,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitInstance {
-    private val okHttpClient : OkHttpClient by lazy {
-        //서버와 api 사이에서 데이터를 intercept
-        val httpLoggingInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor()
+    private val okHttpClient: OkHttpClient by lazy {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY)
         OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
             .build()
     }
 
-    private val retrofit : Retrofit by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create())
             .client(okHttpClient)
@@ -25,7 +24,7 @@ object RetrofitInstance {
             .build()
     }
 
-    val api : BookSearchApi by lazy {
+    val api: BookSearchApi by lazy {
         retrofit.create(BookSearchApi::class.java)
     }
 }

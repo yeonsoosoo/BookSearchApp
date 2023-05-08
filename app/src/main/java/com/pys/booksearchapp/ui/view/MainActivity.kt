@@ -2,6 +2,7 @@ package com.pys.booksearchapp.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.pys.booksearchapp.R
 import com.pys.booksearchapp.data.repository.BookSearchRepositoryImpl
@@ -32,9 +33,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigationView() {
-        binding.bottomNavigationView.setOnClickListener {
-            when(it.id) {
+        binding.bottomNavigationView.setOnItemSelectedListener { item->
+            when(item.itemId) {
                 R.id.fragment_search -> {
+                    Log.d("search", "   pys")
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout,SearchFragment())
                         .commit()
