@@ -5,11 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
+import com.pys.booksearchapp.R
 import com.pys.booksearchapp.databinding.FragmentSettingsBinding
+import com.pys.booksearchapp.ui.viewModel.BookSearchViewModel
+import com.pys.booksearchapp.util.Sort
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
     private var _binding : FragmentSettingsBinding? = null
     private val binding : FragmentSettingsBinding get() = _binding!!
+
+    private lateinit var bookSearchViewModel: BookSearchViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,6 +27,36 @@ class SettingsFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        bookSearchViewModel = (activity as MainActivity).bookSearchViewModel
+
+        saveSettings()
+        loadSettings()
+    }
+
+    private fun saveSettings() {
+        binding.rgSort.setOnCheckedChangeListener() {_, checkedId ->
+            val value = when(checkedId) {
+                R.id.rb_accuracy -> Sort.ACCURACY.value
+                R.id.rb_latest -> Sort.LATEST.value
+                else -> return@setOnCheckedChangeListener
+            }
+            bookSearchViewModel.saveSortMode(value) // 저장
+        }
+    }
+
+    private fun loadSettings() {
+        lifecycleScope.launch {
+            val buttonId = when(bookSearchViewModel.getSortMode()) {
+                Sort.ACCURACY.value -> R.id.rb_accuracy
+                Sort.LATEST.value -> R.id.rb_latest
+                else -> return@launch
+            }
+            binding.rgSort.check(buttonId)
+        }
+    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
