@@ -2,10 +2,7 @@ package com.pys.booksearchapp.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.lifecycle.LiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -14,6 +11,7 @@ import com.pys.booksearchapp.data.api.RetrofitInstance.api
 import com.pys.booksearchapp.data.db.BookSearchDatabase
 import com.pys.booksearchapp.data.model.Book
 import com.pys.booksearchapp.data.model.SearchResponse
+import com.pys.booksearchapp.data.repository.BookSearchRepositoryImpl.PreferencesKeys.CACHE_DELETE_MODE
 import com.pys.booksearchapp.data.repository.BookSearchRepositoryImpl.PreferencesKeys.SORT_MODE
 import com.pys.booksearchapp.util.Constants.PAGING_SIZE
 import com.pys.booksearchapp.util.Sort
@@ -48,6 +46,7 @@ class BookSearchRepositoryImpl(private val db : BookSearchDatabase, private val 
     // DataStore
     private object PreferencesKeys {
         val SORT_MODE = stringPreferencesKey("sort_mode") //저장할 타입이 String 이므로
+        val CACHE_DELETE_MODE = booleanPreferencesKey("cache_delete_mode")
     }
 
     override suspend fun saveSortMode(mode: String) {
@@ -68,6 +67,26 @@ class BookSearchRepositoryImpl(private val db : BookSearchDatabase, private val 
             }
             .map { prefs ->
                 prefs[SORT_MODE] ?: Sort.ACCURACY.value
+            }
+    }
+
+    override suspend fun saveCacheDeleteMode(mode: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[CACHE_DELETE_MODE] = mode
+        }
+    }
+
+    override suspend fun getCacheDeleteMode(): Flow<Boolean> {
+        return dataStore.data
+            .catch { exception ->
+                if(exception is IOException) {
+                    exception.printStackTrace()
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.map { prefs ->
+                prefs[CACHE_DELETE_MODE] ?: false
             }
     }
 

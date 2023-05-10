@@ -1,6 +1,7 @@
 package com.pys.booksearchapp.ui.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,7 @@ class SettingsFragment : Fragment() {
 
         saveSettings()
         loadSettings()
+        showWorkStatus()
     }
 
     private fun saveSettings() {
@@ -44,6 +46,15 @@ class SettingsFragment : Fragment() {
                 else -> return@setOnCheckedChangeListener
             }
             bookSearchViewModel.saveSortMode(value) // 저장
+        }
+
+        binding.swCacheDelete.setOnCheckedChangeListener {_, isChecked ->
+            bookSearchViewModel.saveCacheDeleteMode(isChecked)
+            if(isChecked) {
+                bookSearchViewModel.setWork()
+            } else {
+                bookSearchViewModel.deleteWork()
+            }
         }
     }
 
@@ -56,7 +67,26 @@ class SettingsFragment : Fragment() {
             }
             binding.rgSort.check(buttonId)
         }
+
+        // WorkManager
+        lifecycleScope.launch {
+            val mode = bookSearchViewModel.getCacheDeleteMode()
+            binding.swCacheDelete.isChecked = mode
+        }
     }
+
+    // LiveData로 반환 받은 작업 상태 표시
+    private fun showWorkStatus() {
+        bookSearchViewModel.getWorkStatus().observe(viewLifecycleOwner) { workInfo ->
+            Log.d("WorkManager", workInfo.toString())
+            if(workInfo.isEmpty()) {
+                binding.tvWorkStatus.text = "No works"
+            } else {
+                binding.tvWorkStatus.text = workInfo[0].state.toString()
+            }
+        }
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
