@@ -10,6 +10,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.pys.booksearchapp.R
+import com.pys.booksearchapp.data.db.BookSearchDatabase
 import com.pys.booksearchapp.data.repository.BookSearchRepositoryImpl
 import com.pys.booksearchapp.databinding.ActivityMainBinding
 import com.pys.booksearchapp.ui.viewModel.BookSearchViewModel
@@ -32,10 +33,12 @@ class MainActivity : AppCompatActivity() {
         setUpJetPackNavigation()
 
         //앱이 처음 실행되었을 경우에만 search 노출
-        if(savedInstanceState == null) {
+        /*if(savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_search
-        }
-        val bookSearchRepository = BookSearchRepositoryImpl()
+        }*/
+
+        val dataBase = BookSearchDatabase.getInstance(this)
+        val bookSearchRepository = BookSearchRepositoryImpl(dataBase)
         val factory = BookSearchViewModelProviderFactory(bookSearchRepository, this)
         bookSearchViewModel = ViewModelProvider(this, factory)[BookSearchViewModel::class.java]
     }

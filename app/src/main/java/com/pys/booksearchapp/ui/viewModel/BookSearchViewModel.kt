@@ -1,9 +1,14 @@
 package com.pys.booksearchapp.ui.viewModel
 
 import androidx.lifecycle.*
+import com.pys.booksearchapp.data.model.Book
 import com.pys.booksearchapp.data.model.SearchResponse
 import com.pys.booksearchapp.data.repository.BookSearchRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BookSearchViewModel(private val bookSearchRepository: BookSearchRepository, private val savedStateHandle: SavedStateHandle) : ViewModel() {
@@ -20,6 +25,19 @@ class BookSearchViewModel(private val bookSearchRepository: BookSearchRepository
             }
         }
     }
+
+    // Room
+    fun saveBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
+        bookSearchRepository.insertBooks(book)
+    }
+
+    fun deleteBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
+        bookSearchRepository.deleteBooks(book)
+    }
+
+    //val favoriteBooks : Flow<List<Book>> = bookSearchRepository.getFavoriteBooks()
+    val favoriteBooks : StateFlow<List<Book>> = bookSearchRepository.getFavoriteBooks()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), listOf())
 
     // SavedState
     var query = String()

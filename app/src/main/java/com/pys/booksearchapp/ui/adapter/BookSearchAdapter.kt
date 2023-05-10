@@ -16,6 +16,14 @@ class BookSearchAdapter : androidx.recyclerview.widget.ListAdapter<Book, BookSea
     override fun onBindViewHolder(holder: BookSearchViewHolder, position: Int) {
         val book = currentList[position]
         holder.bind(book)
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.let { it(book) }
+        }
+    }
+
+    private var onItemClickListener : ((Book) -> Unit)? = null
+    fun setOnItemClickListener(listener : (Book) -> Unit) {
+        onItemClickListener = listener
     }
 
     companion object {
