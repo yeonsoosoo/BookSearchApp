@@ -1,6 +1,8 @@
 package com.pys.booksearchapp.ui.viewModel
 
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.pys.booksearchapp.data.model.Book
 import com.pys.booksearchapp.data.model.SearchResponse
 import com.pys.booksearchapp.data.repository.BookSearchRepository
@@ -62,4 +64,9 @@ class BookSearchViewModel(private val bookSearchRepository: BookSearchRepository
         bookSearchRepository.getSortMode().first()
     }
 
+    // Paging, 코루틴이 데이터 스트림을 캐시하고 공유 가능하게 만들어줌
+    val favoritePagingBooks : StateFlow<PagingData<Book>> =
+        bookSearchRepository.getFavoritePagingBooks()
+            .cachedIn(viewModelScope)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PagingData.empty())
 }
