@@ -83,4 +83,17 @@ class BookSearchRepositoryImpl(private val db : BookSearchDatabase, private val 
             pagingSourceFactory = pagingSourceFactory //팩토리를 통해 전달
         ).flow //.flow로 flow화 시키기
     }
+
+    override fun searchBooksPaging(query: String, sort: String): Flow<PagingData<Book>> {
+        val pagingSourceFactory = { BookSearchPagingSource(query, sort)}
+
+        return Pager (
+            config = PagingConfig(
+                pageSize = PAGING_SIZE,
+                enablePlaceholders = false,
+                maxSize = PAGING_SIZE * 3
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
+    }
 }

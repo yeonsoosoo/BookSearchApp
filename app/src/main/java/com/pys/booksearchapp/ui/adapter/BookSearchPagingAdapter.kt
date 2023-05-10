@@ -6,7 +6,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.pys.booksearchapp.data.model.Book
 import com.pys.booksearchapp.databinding.ItemBookPreviewBinding
-import com.pys.booksearchapp.ui.viewModel.BookSearchViewModel
 
 class BookSearchPagingAdapter : PagingDataAdapter<Book, BookSearchViewHolder>(BookDiffCallback) {
 
