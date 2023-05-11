@@ -16,7 +16,7 @@ abstract class BookSearchDatabase : RoomDatabase() {
     abstract fun bookSearchDao() : BookSearchDao
 
     // Singleton Pattern
-    companion object {
+    /*companion object {
         @Volatile
         private var INSTANCE : BookSearchDatabase? = null
 
@@ -31,5 +31,5 @@ abstract class BookSearchDatabase : RoomDatabase() {
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
-    }
+    }*/
 }

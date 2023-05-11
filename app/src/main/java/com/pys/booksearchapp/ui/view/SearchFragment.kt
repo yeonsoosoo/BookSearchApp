@@ -6,27 +6,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pys.booksearchapp.databinding.FragmentSearchBinding
-import com.pys.booksearchapp.ui.adapter.BookSearchAdapter
 import com.pys.booksearchapp.ui.adapter.BookSearchLoadStateAdapter
 import com.pys.booksearchapp.ui.adapter.BookSearchPagingAdapter
-import com.pys.booksearchapp.ui.viewModel.BookSearchViewModel
+import com.pys.booksearchapp.ui.viewModel.SearchViewModel
 import com.pys.booksearchapp.util.Constants.SEARCH_BOOKS_TIME_DELAY
 import com.pys.booksearchapp.util.collectLatestStateFlow
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding: FragmentSearchBinding get() = _binding!!
 
-    private lateinit var bookSearchViewModel: BookSearchViewModel
+    //private lateinit var bookSearchViewModel: BookSearchViewModel
+    //private val bookSearchViewModel by activityViewModels<BookSearchViewModel>()
+    private val searchViewModel by viewModels<SearchViewModel>()
 
     //private lateinit var bookSearchAdapter: BookSearchAdapter
     private lateinit var bookSearchAdapter: BookSearchPagingAdapter
@@ -42,7 +44,7 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bookSearchViewModel = (activity as MainActivity).bookSearchViewModel
+        //bookSearchViewModel = (activity as MainActivity).bookSearchViewModel
 
         setUpRecyclerView()
         searchBooks()
@@ -54,7 +56,7 @@ class SearchFragment : Fragment() {
             bookSearchAdapter.submitList(books)
         }
 */
-        collectLatestStateFlow(bookSearchViewModel.searchPagingResult) {
+        collectLatestStateFlow(searchViewModel.searchPagingResult) {
             bookSearchAdapter.submitData(it)
         }
     }
@@ -89,7 +91,7 @@ class SearchFragment : Fragment() {
         var endTime: Long
 
         binding.etSearch.text =
-            Editable.Factory.getInstance().newEditable(bookSearchViewModel.query)
+            Editable.Factory.getInstance().newEditable(searchViewModel.query)
 
         // 텍스트가 입력되면 값을 viewModel에 전달(사람 입력시간을 고려하여 delay를 줌)
         binding.etSearch.addTextChangedListener { text: Editable? ->
@@ -99,8 +101,8 @@ class SearchFragment : Fragment() {
                     val query = it.toString().trim()
                     if (query.isNotEmpty()) {
                         //bookSearchViewModel.searchBooks(query)
-                        bookSearchViewModel.searchBooksPaging(query)
-                        bookSearchViewModel.query = query
+                        searchViewModel.searchBooksPaging(query)
+                        searchViewModel.query = query
                     }
                 }
             }

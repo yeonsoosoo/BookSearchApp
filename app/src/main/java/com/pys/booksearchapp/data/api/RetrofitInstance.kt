@@ -7,6 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+/*
 object RetrofitInstance {
     private val okHttpClient: OkHttpClient by lazy {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -27,4 +28,4 @@ object RetrofitInstance {
     val api: BookSearchApi by lazy {
         retrofit.create(BookSearchApi::class.java)
     }
-}
+}*/

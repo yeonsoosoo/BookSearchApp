@@ -8,13 +8,17 @@ import com.pys.booksearchapp.data.model.Book
 import com.pys.booksearchapp.data.model.SearchResponse
 import com.pys.booksearchapp.data.repository.BookSearchRepository
 import com.pys.booksearchapp.worker.CacheDeleteWorker
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class BookSearchViewModel(
+/*
+@HiltViewModel
+class BookSearchViewModel @Inject constructor(
     private val bookSearchRepository: BookSearchRepository,
     private val workManager: WorkManager,
     private val savedStateHandle: SavedStateHandle
@@ -119,4 +123,4 @@ class BookSearchViewModel(
 
     fun getWorkStatus() : LiveData<MutableList<WorkInfo>> =
         workManager.getWorkInfosForUniqueWorkLiveData(WORKER_KEY)
-}
+}*/
