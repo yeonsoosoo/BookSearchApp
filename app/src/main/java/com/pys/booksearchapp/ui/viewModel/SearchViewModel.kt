@@ -41,7 +41,7 @@ class SearchViewModel @Inject constructor(
     var query = String()
         set(value) {
             field = value
-            savedStateHandle.set(SAVE_STATE_KEY, value)
+            savedStateHandle[SAVE_STATE_KEY] = value
         }
 
     init {
@@ -53,7 +53,7 @@ class SearchViewModel @Inject constructor(
     }
 
     // DataStore
-    suspend fun getSortMode() = withContext(Dispatchers.IO) {
+    private suspend fun getSortMode() = withContext(Dispatchers.IO) {
         bookSearchRepository.getSortMode().first()
     }
 }
